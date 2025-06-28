@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celebrity Quiz | Charlie Sekabate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #111;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #333;
+        }
+        
+        header {
+            background: #000;
+            padding: 25px 30px;
+            border-bottom: 1px solid #333;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #aaa;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .co-founder {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 12px;
+            color: #777;
+            font-style: italic;
+        }
+        
+        .screen {
+            padding: 30px;
+            display: none;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .welcome-screen {
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .game-title {
+            font-size: 36px;
+            margin: 20px 0 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            color: #ccc;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .stat-box {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px 25px;
+            min-width: 150px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .question-screen {
+            animation: slideIn 0.5s ease;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .question-count {
+            font-size: 16px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .score-display {
+            font-size: 18px;
+            font-weight: 700;
+            background: #000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #333;
+        }
+        
+        .question-text {
+            font-size: 24px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .option {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .option:hover {
+            background: #1a1a1a;
+            border-color: #555;
+        }
+        
+        .option.selected {
+            background: #222;
+            border-color: #fff;
+        }
+        
+        .option.correct {
+            background: #222;
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+        
+        .option.incorrect {
+            background: #222;
+            border-color: #f44336;
+            color: #f44336;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .result-screen {
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .result-title {
+            font-size: 42px;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .final-score {
+            font-size: 80px;
+            font-weight: 800;
+            margin: 30px 0;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .score-message {
+            font-size: 22px;
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        .celeb-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            margin: 20px auto;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .question-text {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Celebrity Quiz</div>
+            <div class="subtitle">Around the World Challenge</div>
+            <div class="co-founder">Co-Founder: Charlie Sekabate</div>
+        </header>
+        
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-screen">
+                <div class="celeb-image">🌎</div>
+                <h1 class="game-title">Global Celebrity Challenge</h1>
+                <p class="tagline">Test your knowledge of the world's most famous personalities with 100 intriguing questions spanning film, music, sports, and more!</p>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">Questions</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Choices</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">Global</div>
+                        <div class="stat-label">Coverage</div>
+                    </div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="start-progress"></div>
+                </div>
+                
+                <button class="btn" id="start-btn">Begin Challenge</button>
+                
+                <p style="color: #777; margin-top: 30px; font-size: 14px;">
+                    Created by Charlie Sekabate | Celebrity Quiz Co-Founder
+                </p>
+            </div>
+        </div>
+        
+        <div id="question-screen" class="screen">
+            <div class="question-screen">
+                <div class="question-header">
+                    <div class="question-count" id="question-count">Question 1 of 100</div>
+                    <div class="score-display">Score: <span id="score">0</span></div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="question-progress"></div>
+                </div>
+                
+                <div class="question-text" id="question-text">
+                    Which actor played the role of Tony Stark in the Marvel Cinematic Universe?
+                </div>
+                
+                <div class="options" id="options">
+                    <div class="option" data-value="1">Robert Downey Jr.</div>
+                    <div class="option" data-value="2">Chris Hemsworth</div>
+                    <div class="option" data-value="3">Chris Evans</div>
+                    <div class="option" data-value="4">Mark Ruffalo</div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="btn" id="next-btn" disabled>Next Question</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="result-screen" class="screen">
+            <div class="result-screen">
+                <div class="celeb-image">🏆</div>
+                <h1 class="result-title">Challenge Complete!</h1>
+                <div class="final-score" id="final-score">85/100</div>
+                
+                <p class="score-message" id="score-message">
+                    Impressive knowledge! You've proven yourself as a true celebrity expert.
+                </p>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="correct-answers">85</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="incorrect-answers">15</div>
+                        <div class="stat-label">Incorrect</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="percentage">85%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+                
+                <button class="btn" id="restart-btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game data - in a real app this would include 100 questions
+        const questions = [
+            {
+                question: "Which actor played the role of Tony Stark in the Marvel Cinematic Universe?",
+                options: ["Robert Downey Jr.", "Chris Hemsworth", "Chris Evans", "Mark Ruffalo"],
+                answer: 1
+            },
+            {
+                question: "Who is known as the 'Queen of Pop'?",
+                options: ["Beyoncé", "Madonna", "Lady Gaga", "Rihanna"],
+                answer: 2
+            },
+            {
+                question: "Which footballer has won the most Ballon d'Or awards?",
+                options: ["Cristiano Ronaldo", "Lionel Messi", "Michel Platini", "Johan Cruyff"],
+                answer: 2
+            },
+            {
+                question: "Who directed the movies 'Inception' and 'The Dark Knight'?",
+                options: ["Steven Spielberg", "Quentin Tarantino", "Christopher Nolan", "James Cameron"],
+                answer: 3
+            },
+            {
+                question: "Which singer released the album '25' in 2015?",
+                options: ["Taylor Swift", "Adele", "Katy Perry", "Ariana Grande"],
+                answer: 2
+            },
+            {
+                question: "Who is the highest-paid actor of 2023?",
+                options: ["Tom Cruise", "Dwayne Johnson", "Will Smith", "Leonardo DiCaprio"],
+                answer: 1
+            },
+            {
+                question: "Which celebrity founded the production company 'Plan B Entertainment'?",
+                options: ["Brad Pitt", "George Clooney", "Matt Damon", "Ben Affleck"],
+                answer: 1
+            },
+            {
+                question: "Who was the first woman to win an Academy Award for Best Director?",
+                options: ["Sofia Coppola", "Kathryn Bigelow", "Greta Gerwig", "Jane Campion"],
+                answer: 2
+            },
+            {
+                question: "Which artist has the most followers on Instagram?",
+                options: ["Cristiano Ronaldo", "Kylie Jenner", "Selena Gomez", "Dwayne Johnson"],
+                answer: 1
+            },
+            {
+                question: "Who is the lead singer of the band Coldplay?",
+                options: ["Bono", "Chris Martin", "Thom Yorke", "Brandon Flowers"],
+                answer: 2
+            }
+        ];
+        
+        // Simulate 100 questions by duplicating (in a real app, you'd have 100 unique)
+        for (let i = questions.length; i < 100; i++) {
+            questions.push({
+                question: `Celebrity question #${i+1} about global icons?`,
+                options: ["Option A", "Option B", "Option C", "Option D"],
+                answer: Math.floor(Math.random() * 4) + 1
+            });
+        }
+        
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const questionScreen = document.getElementById('question-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options');
+        const questionCount = document.getElementById('question-count');
+        const scoreElement = document.getElementById('score');
+        const finalScore = document.getElementById('final-score');
+        const correctAnswers = document.getElementById('correct-answers');
+        const incorrectAnswers = document.getElementById('incorrect-answers');
+        const percentage = document.getElementById('percentage');
+        const scoreMessage = document.getElementById('score-message');
+        const questionProgress = document.getElementById('question-progress');
+        const startProgress = document.getElementById('start-progress');
+        
+        // Game state
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+        
+        // Initialize progress bar
+        startProgress.style.width = '100%';
+        
+        // Start game
+        startBtn.addEventListener('click', () => {
+            welcomeScreen.classList.remove('active');
+            questionScreen.classList.add('active');
+            loadQuestion();
+        });
+        
+        // Load question
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionText.textContent = question.question;
+            questionCount.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            
+            // Update progress bar
+            const progressPercentage = ((currentQuestion) / questions.length) * 100;
+            questionProgress.style.width = `${progressPercentage}%`;
+            
+            // Clear options
+            optionsContainer.innerHTML = '';
+            
+            // Add options
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.dataset.value = index + 1;
+                optionElement.addEventListener('click', selectOption);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Reset next button
+            nextBtn.disabled = true;
+        }
+        
+        // Select option
+        function selectOption(e) {
+            if (selectedOption) return;
+            
+            const selected = e.target;
+            const selectedValue = parseInt(selected.dataset.value);
+            const correctValue = questions[currentQuestion].answer;
+            
+            // Disable all options
+            document.querySelectorAll('.option').forEach(option => {
+                option.removeEventListener('click', selectOption);
+            });
+            
+            // Mark correct and incorrect
+            document.querySelectorAll('.option').forEach(option => {
+                const value = parseInt(option.dataset.value);
+                if (value === correctValue) {
+                    option.classList.add('correct');
+                } else if (value === selectedValue) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            // Update score if correct
+            if (selectedValue === correctValue) {
+                score++;
+                scoreElement.textContent = score;
+            }
+            
+            selectedOption = selectedValue;
+            nextBtn.disabled = false;
+        }
+        
+        // Next question
+        nextBtn.addEventListener('click', () => {
+            currentQuestion++;
+            selectedOption = null;
+            
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+        
+        // Show results
+        function showResults() {
+            questionScreen.classList.remove('active');
+            resultScreen.classList.add('active');
+            
+            const correct = score;
+            const incorrect = questions.length - score;
+            const accuracy = Math.round((correct / questions.length) * 100);
+            
+            finalScore.textContent = `${score}/${questions.length}`;
+            correctAnswers.textContent = correct;
+            incorrectAnswers.textContent = incorrect;
+            percentage.textContent = `${accuracy}%`;
+            
+            // Set message based on performance
+            if (accuracy >= 90) {
+                scoreMessage.textContent = "Exceptional! You're a true celebrity expert with encyclopedic knowledge!";
+            } else if (accuracy >= 75) {
+                scoreMessage.textContent = "Impressive! You've got an excellent grasp of global celebrity culture!";
+            } else if (accuracy >= 60) {
+                scoreMessage.textContent = "Well done! You clearly know your celebrities around the world!";
+            } else if (accuracy >= 40) {
+                scoreMessage.textContent = "Good effort! You have a solid foundation of celebrity knowledge!";
+            } else {
+                scoreMessage.textContent = "Nice try! Brush up on your celebrity knowledge and try again!";
+            }
+        }
+        
+        // Restart game
+        restartBtn.addEventListener('click', () => {
+            currentQuestion = 0;
+            score = 0;
+            selectedOption = null;
+            scoreElement.textContent = '0';
+            
+            resultScreen.classList.remove('active');
+            welcomeScreen.classList.add('active');
+        });
+    </script>
+</body>
+</html>
